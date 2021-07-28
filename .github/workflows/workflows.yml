@@ -27,7 +27,7 @@ jobs:
   specs-no-dependencies:
     strategy:
       matrix:
-        os: [ubuntu, macos]
+        os: [ubuntu, macos, windows]
         ruby: [2.5, 2.6, 2.7, 3.0]
     runs-on: ${{ matrix.os }}-latest
     steps:

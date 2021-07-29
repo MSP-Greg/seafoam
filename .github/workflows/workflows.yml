@@ -1,35 +1,37 @@
 name: Workflows
-on: [push]
+on: [push, workflow_dispatch]
 jobs:
   rubocop:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 3.0
+        ruby-version: '3.0'
         bundler-cache: true
     - run: bundle exec rubocop bin lib spec demos
   specs:
     strategy:
       matrix:
-        os: [ubuntu, macos]
-        ruby: [2.5, 2.6, 2.7, 3.0]
-    runs-on: ${{ matrix.os }}-latest
+        os: [ubuntu-20.04, macos-10.15, windows-2019]
+        ruby: [2.5, 2.6, 2.7, '3.0']
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
-    - uses: ruby/setup-ruby@v1
+    - uses: MSP-Greg/setup-ruby-pkgs@v1
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
-    - run: if [[ $(uname) == "Darwin" ]]; then brew install graphviz capstone; else sudo apt-get install graphviz libcapstone3; fi
+        brew:    graphviz capstone
+        apt-get: graphviz libcapstone3
+        mingw:   graphviz capstone
     - run: bundle exec rspec
   specs-no-dependencies:
     strategy:
       matrix:
-        os: [ubuntu, macos]
-        ruby: [2.5, 2.6, 2.7, 3.0]
-    runs-on: ${{ matrix.os }}-latest
+        os: [ubuntu-20.04, macos-10.15, windows-2019]
+        ruby: [2.5, 2.6, 2.7, '3.0']
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
